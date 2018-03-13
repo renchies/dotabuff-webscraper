@@ -18,15 +18,30 @@ app.get('/scrape', function (req, res) {
             var frame = {
                 name: ".name",
                 price: ".number",
-                stats: ".attribute",
-                description: ".stats",
+                stats: ".stats",
+                description: ".description-block",
                 notes: ".notes",
                 lore: ".lore",
                 builds_into: ".item-builds-into",
-                builds_from: ".item-builds-from"
+                builds_from: ""
             };
 
-            console.log($('body').scrape(frame, { string: true }));
+            frame = $('.embedded-tooltip').scrape(frame, { string: true });
+
+            var buildsFrom = {};
+            var re = new RegExp('(/assets/items/)');
+            var i = -1;
+            $('.embedded-tooltip img').each(function (index, elem) {
+                var temp = $(this).attr('src');
+                if(re.exec(temp) && i > -1) {
+                    buildsFrom[i++] = re.exec(temp).input;
+                } else if (i === -1 && re.exec(temp))
+                    i++;
+            });
+
+            // TODO: appends buildsFrom to frame
+            console.log(buildsFrom);
+            console.log(frame);
         }
     });
 });
