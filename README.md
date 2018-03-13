@@ -4,13 +4,24 @@ Scrapes [Dotabuff](https://www.dotabuff.com) for item information necessary for 
 
 ## Used
 
+- Node.js
 - cheerio
 - jsonframe-cheerio
 
+## TODO
+
+- Dynamic endpoints
+- Promises in endpoint handlers
+- error-handling middleware function (app.use())
+
 ## Installation
 
-`npm install`
+~~~
+npm install
+~~~
 
 ## Running
 
-`node index.js`
+~~~
+node index.js
+~~~

@@ -4,13 +4,13 @@ var request = require('request');
 var cheerio = require('cheerio');
 var jsonframe = require('jsonframe-cheerio');
 var fs = require('fs');
+var _ = require('underscore');
 
 app.get('/scrape', function (req, res) {
-    // TODO: https://www.dotabuff.com/items/ + item
-    // TODO: array of items
-    url = 'http://www.dotabuff.com/items/power-treads';
 
-    request(url, function (error, response, html ) {
+    endpoint = 'http://www.dotabuff.com/items/power-treads';
+
+    request(endpoint, function (error, response, html ) {
         if(!error) {
             var $ = cheerio.load(html);
             jsonframe($);
@@ -21,27 +21,27 @@ app.get('/scrape', function (req, res) {
                 stats: ".stats",
                 description: ".description-block",
                 notes: ".notes",
-                lore: ".lore",
-                builds_into: ".item-builds-into",
-                builds_from: ""
+                lore: ".lore"
             };
 
-            frame = $('.embedded-tooltip').scrape(frame, { string: true });
+            var builds_from = [];
+            var id = 0;
 
-            var buildsFrom = {};
-            var re = new RegExp('(/assets/items/)');
-            var i = -1;
+            // Build info only contains images, so get item names from image urls
             $('.embedded-tooltip img').each(function (index, elem) {
-                var temp = $(this).attr('src');
-                if(re.exec(temp) && i > -1) {
-                    buildsFrom[i++] = re.exec(temp).input;
-                } else if (i === -1 && re.exec(temp))
-                    i++;
+                var pattern = new RegExp('(/assets/items/)');
+                var itemUrl = pattern.exec($(this).attr('src')); //only choose urls that are items
+                
+                if (itemUrl && id++) // skips first valid url
+                    builds_from.push(itemUrl.input);
             });
 
-            // TODO: appends buildsFrom to frame
-            console.log(buildsFrom);
-            console.log(frame);
+            frame = $('.embedded-tooltip').scrape(frame, { string: true });
+            builds_from = _.extend({}, builds_from);
+            frame["builds_from"] = _.extend({}, { builds_from });
+
+            console.log(builds_from);
+            console.log(frame); // TODO: not displaying builds_from attribute
         }
     });
 });
@@ -49,4 +49,3 @@ app.get('/scrape', function (req, res) {
 app.listen('8081');
 console.log('go to localhost:8081/scrape');
 exports = module.exports = app;
-
