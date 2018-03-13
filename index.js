@@ -1,46 +1,37 @@
 var express = require('express');
-var fs = require('fs');
+var app = express();
 var request = require('request');
 var cheerio = require('cheerio');
-var app = express();
+var jsonframe = require('jsonframe-cheerio');
+var fs = require('fs');
 
 app.get('/scrape', function (req, res) {
     // TODO: https://www.dotabuff.com/items/ + item
     // TODO: array of items
-    
-    url = 'https://www.dotabuff.com/items/power-treads';
+    url = 'http://www.dotabuff.com/items/power-treads';
 
     request(url, function (error, response, html ) {
         if(!error) {
             var $ = cheerio.load(html);
-            var name, price, description, lore;
+            jsonframe($);
 
-            var json = {
-                name : "",
-                price : "",
-                stats : {},
-                description : "",
-                lore : "",
-                builds_into : [{}],
-                builds_from : [{}]
+            var frame = {
+                name: ".name",
+                price: ".number",
+                stats: ".attribute",
+                description: ".stats",
+                notes: ".notes",
+                lore: ".lore",
+                builds_into: ".item-builds-into",
+                builds_from: ".item-builds-from"
             };
 
-            $('.shop-icons').filter(function () {
-                var data = $(this);
-
-                name = data.next().text();
-                json.name = name;
-            });
+            console.log($('body').scrape(frame, { string: true }));
         }
-
-        fs.writeFile('output.json', JSON.stringify(json, null, 4), function (err) {
-            console.log('File successfully written.');
-        });
-
-        res.send('Details in console.');
     });
 });
 
 app.listen('8081');
+console.log('go to localhost:8081/scrape');
 exports = module.exports = app;
 
