@@ -25,23 +25,19 @@ app.get('/scrape', function (req, res) {
             };
 
             var builds_from = [];
-            var id = 0;
 
             // Build info only contains images, so get item names from image urls
             $('.embedded-tooltip img').each(function (index, elem) {
                 var pattern = new RegExp('(/assets/items/)');
                 var itemUrl = pattern.exec($(this).attr('src')); //only choose urls that are items
-                
-                if (itemUrl && id++) // skips first valid url
+                if (itemUrl)
                     builds_from.push(itemUrl.input);
             });
 
-            frame = $('.embedded-tooltip').scrape(frame, { string: true });
-            builds_from = _.extend({}, builds_from);
-            frame["builds_from"] = _.extend({}, { builds_from });
-
-            console.log(builds_from);
-            console.log(frame); // TODO: not displaying builds_from attribute
+            builds_from = JSON.parse(JSON.stringify(builds_from));
+            frame = JSON.parse($('.embedded-tooltip').scrape(frame, { string: true }));
+            frame.builds_from = builds_from;
+            console.log(frame);
         }
     });
 });
