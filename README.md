@@ -24,4 +24,5 @@ npm install
 
 ~~~
 node index.js
+Go to localhost:8081/scrape
 ~~~
