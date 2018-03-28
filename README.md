@@ -7,12 +7,16 @@ Scrapes [Dotabuff](https://www.dotabuff.com) for item information necessary for 
 - Node.js
 - cheerio
 - jsonframe-cheerio
+- Underscorejs
 
 ## TODO
 
-- Dynamic endpoints
+~~-Multiple endpoints~~
+- Filter out undefined items from json
+- Handle items with multiple levels (repeats)
+- Handle multiple endpoints asynchronously
 - Promises in endpoint handlers
-- error-handling middleware function (app.use())
+- Error-handling middleware function (app.use())
 
 ## Installation
 
@@ -23,6 +27,9 @@ npm install
 ## Running
 
 ~~~
-node index.js
+$ node index.js
+Update item list by going to localhost:8081/items
+Replace items array in /scrape function with updated items
+Restart localhost
 Go to localhost:8081/scrape
 ~~~
