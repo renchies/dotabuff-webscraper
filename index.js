@@ -19,7 +19,9 @@ app.get('/items', function (req, res) {
             items = _.pluck(items, 'localized_name');
 
             // remove items not necessary for item builds
-            items = _.filter(items, function (item) { return !(new RegExp('[:\)\(]')).test(item); });
+            var parens = new RegExp('[:\)\(]');
+            var recipe = new RegExp('Recipe');
+            items = _.filter(items, function (item) { return !(new RegExp(parens.source + "|" + recipe.source)).test(item); });
 
             // remove apostrophes
             items = _.map(items, function (item) {
@@ -192,7 +194,6 @@ app.get('/scrape', function (req, res) {
         'Veil of Discord',
         'Guardian Greaves',
         'Rod of Atos',
-        'Iron Talon Recipe',
         'Iron Talon',
         'Abyssal Blade',
         'Heavens Halberd',
@@ -254,5 +255,6 @@ var buildArr = function (arr, url) {
 };
 
 app.listen('8081');
-console.log('go to localhost:8081/scrape');
+console.log('go to localhost:8081/items to update item list');
+console.log('go to localhost:8081/scrape to get json');
 exports = module.exports = app;

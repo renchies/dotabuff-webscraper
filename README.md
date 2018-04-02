@@ -11,7 +11,7 @@ Scrapes [Dotabuff](https://www.dotabuff.com) for item information necessary for 
 
 ## TODO
 
-~~-Multiple endpoints~~
+~~- Multiple endpoints~~
 - Filter out undefined items from json
 - Handle items with multiple levels (repeats)
 - Handle multiple endpoints asynchronously
